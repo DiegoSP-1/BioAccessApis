@@ -1,9 +1,9 @@
 import smtplib
 from email.mime.text import MIMEText
+import os
 
-# ⚠️ CONFIGURA ESTO
-EMAIL_SENDER = "bioacces64@gmail.com"
-EMAIL_PASSWORD = "gtmu nsog whsr kuqq"
+EMAIL_SENDER = os.getenv("EMAIL_USER")
+EMAIL_PASSWORD = os.getenv("EMAIL_PASS")
 
 def enviar_otp_email(destinatario, otp):
 
