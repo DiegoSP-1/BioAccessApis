@@ -16,15 +16,6 @@ import json
 import subprocess
 import sys
 from datetime import datetime
-from fastapi.middleware.cors import CORSMiddleware
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["https://bioaccess-1074c.web.app"],  # o tu dominio de Firebase
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 app = FastAPI()
 
@@ -58,7 +49,7 @@ ultimo_acceso_web = {}
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["https://bioaccess-1074c.web.app"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
