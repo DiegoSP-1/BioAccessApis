@@ -6,7 +6,7 @@ def registrar_acceso(nombre,matricula, estado, foto_url=None):
     try:
         # 🔥 CONVERTIR A URL COMPLETA SI EXISTE
         if foto_url and not foto_url.startswith("http"):
-            foto_url = f"http://127.0.0.1:8001/{foto_url}"
+            foto_url = f"https://bioaccessapis.onrender.com/{foto_url}"
         data = {
             "nombre": nombre,
             "estado": estado,
