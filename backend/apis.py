@@ -434,15 +434,15 @@ def dashboard():
 
 @app.get("/scan")
 def dashboard():
-    return RedirectResponse(url="https://bioaccess-1074c.web.app/dashboard/")
+    return RedirectResponse(url="https://bioaccess-1074c.web.app/scan/")
 
 @app.get("/otp")
 def dashboard():
-    return RedirectResponse(url="https://bioaccess-1074c.web.app/dashboard/")
+    return RedirectResponse(url="https://bioaccess-1074c.web.app/otp/otp.html/")
 
-@app.get("/scan")
+@app.get("/registro")
 def dashboard():
-    return RedirectResponse(url="https://bioaccess-1074c.web.app/dashboard/")
+    return RedirectResponse(url="https://bioaccess-1074c.web.app/registro/")
 
 
 # ===============================
