@@ -5,6 +5,7 @@ from backend.config.firebase_config import db
 from backend.services.access_service import registrar_acceso 
 from backend.services.camera_check import autodiagnostico_camara
 from backend.services.email_services import enviar_otp_email
+from fastapi.responses import RedirectResponse
 import base64
 import os
 import time
@@ -427,11 +428,24 @@ async def procesar_frame(data: dict):
         print(f"🔥 Error: {e}")
         return {"error": str(e)}
 
+@app.get("/dashboard")
+def dashboard():
+    return RedirectResponse(url="https://bioaccess-1074c.web.app/dashboard/")
+
+@app.get("/scan")
+def dashboard():
+    return RedirectResponse(url="https://bioaccess-1074c.web.app/dashboard/")
+
+@app.get("/otp")
+def dashboard():
+    return RedirectResponse(url="https://bioaccess-1074c.web.app/dashboard/")
+
+@app.get("/scan")
+def dashboard():
+    return RedirectResponse(url="https://bioaccess-1074c.web.app/dashboard/")
+
+
 # ===============================
 # MONTAJES
 # ===============================
-app.mount("/capturas", StaticFiles(directory=os.path.join(BASE_DIR, "capturas")), name="capturas")
-app.mount("/dashboard", StaticFiles(directory=os.path.join(BASE_DIR, "frontend/dashboard")), name="dashboard")
-app.mount("/scan", StaticFiles(directory=os.path.join(BASE_DIR, "frontend/scan")), name="scan")
-app.mount("/otp", StaticFiles(directory=os.path.join(BASE_DIR, "frontend/otp")), name="otp")
-app.mount("/registro", StaticFiles(directory=os.path.join(BASE_DIR, "frontend/registro")), name="registro")
+# app.mount("/capturas", StaticFiles(directory=os.path.join(BASE_DIR, "capturas")), name="capturas")
