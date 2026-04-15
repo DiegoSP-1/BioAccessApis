@@ -428,6 +428,27 @@ async def procesar_frame(data: dict):
         print(f"🔥 Error: {e}")
         return {"error": str(e)}
 
+# ===============================
+# LIVENESS DETECTION
+# ===============================
+@app.post("/liveness")
+async def liveness(data: dict):
+    try:
+        foto_b64 = data.get("foto")
+        if not foto_b64:
+            return {"error": "No llegó la foto"}
+
+        header, encoded = foto_b64.split(",", 1)
+        nparr = np.frombuffer(base64.b64decode(encoded), np.uint8)
+        frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+
+        resultado = detectar_liveness(frame)
+
+        return {"liveness": resultado}
+
+    except Exception as e:
+        return {"error": str(e)}
+
 @app.get("/dashboard")
 def dashboard():
     return RedirectResponse(url="https://bioaccess-1074c.web.app/dashboard/")
