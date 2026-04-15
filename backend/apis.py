@@ -346,7 +346,7 @@ def obtener_visitantes():
 
         lista_ordenada = sorted(
             lista,
-            key=lambda x: x.get("fecha", ""),
+            key = lambda x: (x.get('fecha', ''), x.get('hora', ''))
             reverse=True
         )
 
