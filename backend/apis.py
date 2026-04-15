@@ -383,6 +383,15 @@ async def procesar_frame(data: dict):
         nparr = np.frombuffer(base64.b64decode(encoded), np.uint8)
         frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
 
+        # LIVENESS
+        es_real = detectar_liveness(frame)
+
+        if not es_real:
+            return {
+                "status": "Spoof detectado",
+                "mensaje": "No es una persona real"
+            }
+
         errores = autodiagnostico_camara(frame)
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         faces = face_cascade.detectMultiScale(gray, 1.3, 5)
