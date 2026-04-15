@@ -133,7 +133,7 @@ def obtener_accesos():
 
             lista_ordenada = sorted(
                 lista,
-                key = lambda x: (x.get('fecha', ''), x.get('hora', ''))
+                key = lambda x: (x.get('fecha', ''), x.get('hora', '')),
                 reverse=True
             )
 
