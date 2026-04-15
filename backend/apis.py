@@ -6,7 +6,6 @@ from backend.services.access_service import registrar_acceso
 from backend.services.camera_check import autodiagnostico_camara
 from backend.services.email_services import enviar_otp_email
 from fastapi.responses import RedirectResponse
-from backend.utils.liveness import detectar_liveness
 import base64
 import os
 import time
@@ -438,26 +437,6 @@ async def procesar_frame(data: dict):
         print(f"🔥 Error: {e}")
         return {"error": str(e)}
 
-# ===============================
-# LIVENESS DETECTION
-# ===============================
-@app.post("/liveness")
-async def liveness(data: dict):
-    try:
-        foto_b64 = data.get("foto")
-        if not foto_b64:
-            return {"error": "No llegó la foto"}
-
-        header, encoded = foto_b64.split(",", 1)
-        nparr = np.frombuffer(base64.b64decode(encoded), np.uint8)
-        frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-
-        resultado = detectar_liveness(frame)
-
-        return {"liveness": resultado}
-
-    except Exception as e:
-        return {"error": str(e)}
 
 @app.get("/dashboard")
 def dashboard():
