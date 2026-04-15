@@ -133,7 +133,7 @@ def obtener_accesos():
 
             lista_ordenada = sorted(
                 lista,
-                key = lambda x: f"{x.get('fecha',")}{x.get('hora',")}",
+                key = lambda x: (x.get('fecha', ''), x.get('hora', ''))
                 reverse=True
             )
 
@@ -346,7 +346,7 @@ def obtener_visitantes():
 
         lista_ordenada = sorted(
             lista,
-            key = lambda x: (x.get('fecha', ''), x.get('hora', ''))
+            key=lambda x: x.get("fecha", ""),
             reverse=True
         )
 
