@@ -6,6 +6,7 @@ from backend.services.access_service import registrar_acceso
 from backend.services.camera_check import autodiagnostico_camara
 from backend.services.email_services import enviar_otp_email
 from fastapi.responses import RedirectResponse
+from backend.utils.liveness import detectar_liveness
 import base64
 import os
 import time
