@@ -16,8 +16,31 @@ import json
 import subprocess
 import sys
 from datetime import datetime
+import base64
+from backend.config.firebase_config import bucket
 
 app = FastAPI()
+
+def guardar_imagenes_firebase(nombre, fotos):
+    urls = []
+
+    for i, foto in enumerate(fotos):
+        try:
+            img_data = base64.b64decode(foto.split(",")[1])
+
+            filename = f"dataset/{nombre}/{int(time.time())}_{i}.jpg"
+
+            blob = bucket.blob(filename)
+            blob.upload_from_string(img_data, content_type='image/jpeg')
+
+            # URL pública
+            blob.make_public()
+            urls.append(blob.public_url)
+
+        except Exception as e:
+            print("Error subiendo imagen:", e)
+
+    return urls
 
 # ===============================
 # CONFIGURACIÓN DE RUTAS 
@@ -68,43 +91,37 @@ def home():
 @app.post("/registro")
 def registrar_usuario(data: dict):
     try:
+        # Validar duplicados
+        docs = db.collection("usuarios").where("matricula", "==", matricula).stream()
+        if any(docs):
+            return {"error": "La matrícula ya está registrada"}
+
+        docs = db.collection("usuarios").where("correo", "==", correo).stream()
+        if any(docs):
+            return {"error": "El correo ya está registrado"}
+            
         nombre = data.get("nombre").strip()
         matricula = data.get("matricula")
         correo = data.get("correo")
         fotos = data.get("fotos")
 
-        # Ruta absoluta en la raíz del proyecto
-        carpeta = os.path.join(BASE_DIR, "dataset", nombre)
-        
-        if not os.path.exists(carpeta):
-            os.makedirs(carpeta)
+        # 🔹 Guardar imágenes
+        urls_fotos = guardar_imagenes_firebase(nombre, fotos)
 
-        for i, foto in enumerate(fotos):
-            try:
-                if "," in foto:
-                    img_data = foto.split(",")[1]  # FIX
-                else:
-                    img_data = foto
+        # 🔹 Guardar en Firebase (USA TU SERVICE)
+        from backend.services.user_service import registrar_usuario
+        registrar_usuario(nombre, matricula, correo)
 
-                img_bytes = base64.b64decode(img_data)
-                ruta_foto = os.path.join(carpeta, f"{i}.jpg")
-                
-                with open(ruta_foto, "wb") as f:
-                    f.write(img_bytes)
+        # 🔥 Entrenar modelo (en segundo plano)
+        subprocess.Popen(["python", "train_model.py"])
 
-            except Exception:
-                # Ignora errores individuales de fotos
-                pass
-
-        # Guardado en Firebase
         db.collection("usuarios").add({
             "nombre": nombre,
             "matricula": matricula,
             "correo": correo,
-            "fecha_registro": time.strftime("%Y-%m-%d")
+            "fotos": urls_fotos
         })
-
-        return {"mensaje": "Usuario registrado correctamente"}
+        return {"mensaje": "Usuario registrado y modelo actualizado"}
 
     except Exception as e:
         return {"error": str(e)}
@@ -374,6 +391,13 @@ def activar_reconocimiento(data: dict = None): # Agregamos '= None' para que no 
 # ===============================
 @app.post("/procesar-frame")
 async def procesar_frame(data: dict):
+    
+    if os.path.exists(modelo_path):
+        recognizer.read(modelo_path)
+
+        with open(labels_path, "r") as f:
+            global labels
+            labels = {int(k): v for k, v in json.load(f).items()}
     
     try:       
         foto_b64 = data.get("foto")
