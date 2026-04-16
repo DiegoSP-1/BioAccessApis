@@ -13,7 +13,7 @@ cred_dict = json.loads(firebase_json)
 if not firebase_admin._apps:
     firebase_admin.initialize_app(credentials.Certificate(cred_dict))
 
-cred = credentials.Certificate("firebase.json")
+cred = credentials.Certificate("firebase_json.json")
 firebase_admin.initialize_app(cred, {
     'storageBucket': 'bioaccess-1074c.appspot.com'
 })
